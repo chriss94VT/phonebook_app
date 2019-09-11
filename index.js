@@ -94,6 +94,17 @@ app.post("/api/persons", (req, res) => {
   return res.json(entry);
 });
 
+app.put('/api/persons/:id', (req, res) => {
+  const id = req.params.id;
+
+  const updatedPerson = {
+    name: req.body.name,
+    number: req.body.number
+  };
+
+  return res.json(updatedPerson);
+})
+
 const generateID = () => {
   return Math.floor(Math.random() * 1000);
 };
