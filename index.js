@@ -61,8 +61,6 @@ app.get("/api/persons/:id", (req, res) => {
 app.delete("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id);
   entries = entries.filter(e => e.id !== id);
-
-  console.log(entries);
   return res.status(204).end();
 });
 
@@ -94,17 +92,19 @@ app.post("/api/persons", (req, res) => {
   return res.json(entry);
 });
 
-app.put('/api/persons/:id', (req, res) => {
-  const id = req.params.id;
+app.put("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  console.log(id);
 
-  const updatedPerson = {
-    name: req.body.name,
-    number: req.body.number
-  };
-
-  console.log(updatedPerson);
-  return res.json(updatedPerson);
-})
+  const newEntries = entries.map(entry => {
+    if (entry.id === id) {
+      return { ...entry, name: req.body.name, number: req.body.number };
+    }
+    return entry;
+  });
+  console.log(newEntries);
+  return res.send(newEntries);
+});
 
 const generateID = () => {
   return Math.floor(Math.random() * 1000);
