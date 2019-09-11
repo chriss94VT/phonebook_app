@@ -1,26 +1,26 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const morgan = require("morgan");
+//const morgan = require("morgan");
 const app = express();
 
-//app.use(express.static("build"));
+app.use(express.static("build"));
 app.use(cors());
 app.use(bodyParser.json());
-app.use(
-  morgan(function(tokens, req, res) {
-    return [
-      tokens.method(req, res),
-      tokens.url(req, res),
-      tokens.status(req, res),
-      tokens.res(req, res, "content-length"),
-      "-",
-      tokens["response-time"](req, res),
-      "ms",
-      JSON.stringify(req.body)
-    ];
-  })
-);
+// app.use(
+//   morgan(function(tokens, req, res) {
+//     return [
+//       tokens.method(req, res),
+//       tokens.url(req, res),
+//       tokens.status(req, res),
+//       tokens.res(req, res, "content-length"),
+//       "-",
+//       tokens["response-time"](req, res),
+//       "ms",
+//       JSON.stringify(req.body)
+//     ];
+//   })
+// );
 
 let entries = [
   {
