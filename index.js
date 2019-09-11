@@ -102,6 +102,7 @@ app.put('/api/persons/:id', (req, res) => {
     number: req.body.number
   };
 
+  console.log(updatedPerson);
   return res.json(updatedPerson);
 })
 
