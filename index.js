@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 //const morgan = require("morgan");
@@ -97,7 +98,7 @@ const generateID = () => {
   return Math.floor(Math.random() * 1000);
 };
 
-const PORT = 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
