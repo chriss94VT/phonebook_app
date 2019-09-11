@@ -94,7 +94,6 @@ app.post("/api/persons", (req, res) => {
 
 app.put("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id);
-  console.log(id);
 
   const newEntries = entries.map(entry => {
     if (entry.id === id) {
@@ -102,7 +101,6 @@ app.put("/api/persons/:id", (req, res) => {
     }
     return entry;
   });
-  console.log(newEntries);
   return res.send(newEntries);
 });
 
