@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 // );
 app.use(customLogger.requestLogger);
 
-const url = process.env.MONGODB_URI;
+const url = `mongodb+srv://${process.env.DBUSER}:${process.env.DBPASSWORD}@herokuappdb-eb4ow.mongodb.net/phonebook?retryWrites=true&w=majority`;
 console.log('Connecting to', url);
 
 mongoose
