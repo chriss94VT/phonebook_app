@@ -3,6 +3,7 @@ require("dotenv").config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const uniqueVal = require('mongoose-unique-validator');
 
 mongoose.set("useFindAndModify", false);
 //const morgan = require("morgan");
@@ -43,17 +44,19 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 const entrySchema = new mongoose.Schema({
   name: {
     type: String,
-    minlength: 5,
+    minlength: 3,
     required: true
   },
-  number: String,
-  date: {
-    type: Date,
+  number: {
+    type: String,
+    minlength: 8,
     required: true
   },
+  date: Date,
   id: Number
 });
 
+entrySchema.plugin(uniqueVal);
 const Entry = mongoose.model("Entry", entrySchema);
 
 app.get("/api/persons/", (req, res, next) => {
@@ -99,16 +102,6 @@ app.delete("/api/persons/:id", (req, res, next) => {
 app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
-  Entry.findOne({ name: /chris/i })
-    .then(docs => {
-      if (docs !== null) {
-        return res.status(400).json({
-          error: "name must be unique"
-        });
-      }
-    })
-    .catch(error => next(error));
-
   if (!body.name || !body.number) {
     return res.status(400).json({
       error: "content not found"
@@ -122,8 +115,18 @@ app.post("/api/persons", (req, res, next) => {
     id: generateID()
   });
 
-  entry.save().catch(error => next(error));
-  return res.json(entry);
+  Entry.findOne({ name: body.name })
+    .then(docs => {
+      if (docs !== null) {
+        return res.status(400).json({
+          error: "Unique names are required"
+        });
+      } else {
+        entry.save().catch(error => next(error));
+        return res.json(entry);
+      }
+    })
+    .catch(error => next(error));
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
