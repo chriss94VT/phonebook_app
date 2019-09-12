@@ -38,6 +38,7 @@ const Entry = mongoose.model("Entry", entrySchema);
 app.get("/api/persons", (req, res) => {
   Entry.find({})
     .then(docs => {
+      mongoose.connection.close();
       return res.json(docs);
     })
     .catch(err => {
