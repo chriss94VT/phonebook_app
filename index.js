@@ -3,6 +3,8 @@ require("dotenv").config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+
+mongoose.set("useFindAndModify", false);
 //const morgan = require("morgan");
 const app = express();
 
@@ -23,29 +25,46 @@ app.use(bodyParser.json());
 //     ];
 //   })
 // );
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError" && error.kind == "ObjectId") {
+    return res.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return res.status(400).json({ error: error.message });
+  }
+  next(error);
+};
+app.use(errorHandler);
+
 const url = `mongodb+srv://${process.env.DBUSER}:${process.env.DBPASSWORD}@herokuappdb-eb4ow.mongodb.net/phonebook?retryWrites=true&w=majority`;
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const entrySchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    minlength: 5,
+    required: true
+  },
   number: String,
-  date: Date,
+  date: {
+    type: Date,
+    required: true
+  },
   id: Number
 });
 
 const Entry = mongoose.model("Entry", entrySchema);
 
-app.get("/api/persons", (req, res) => {
+app.get("/api/persons/", (req, res, next) => {
   Entry.find({})
     .then(docs => {
       return res.json(docs);
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(error => next(error));
 });
 
-app.get("/info", (req, res) => {
+app.get("/info", (req, res, next) => {
   Entry.find({})
     .then(docs => {
       const content = `<p>Phonebook has info for ${
@@ -53,12 +72,10 @@ app.get("/info", (req, res) => {
       } person(s)</p><p>${new Date()}</p>`;
       return res.send(content);
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(error => next(error));
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   const userID = Number(req.params.id);
   Entry.findOne({ id: userID })
     .then(docs => {
@@ -67,23 +84,19 @@ app.get("/api/persons/:id", (req, res) => {
       }
       return res.json(docs);
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(error => next(error));
 });
 
-app.delete("/api/persons/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res, next) => {
   const userID = Number(req.params.id);
   Entry.findOneAndDelete({ id: userID })
     .then(docs => {
       return res.json(docs);
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(error => next(error));
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
   Entry.findOne({ name: /chris/i })
@@ -94,9 +107,7 @@ app.post("/api/persons", (req, res) => {
         });
       }
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(error => next(error));
 
   if (!body.name || !body.number) {
     return res.status(400).json({
@@ -111,13 +122,11 @@ app.post("/api/persons", (req, res) => {
     id: generateID()
   });
 
-  entry.save().catch(err => {
-    console.log(err);
-  });
+  entry.save().catch(error => next(error));
   return res.json(entry);
 });
 
-app.put("/api/persons/:id", (req, res) => {
+app.put("/api/persons/:id", (req, res, next) => {
   const userID = Number(req.params.id);
 
   Entry.findOneAndUpdate(
@@ -127,14 +136,17 @@ app.put("/api/persons/:id", (req, res) => {
     .then(docs => {
       return res.json(docs);
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(error => next(error));
 });
 
 const generateID = () => {
   return Math.floor(Math.random() * 100000000);
 };
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint);
 
 const PORT = process.env.PORT;
 app.listen(PORT);
