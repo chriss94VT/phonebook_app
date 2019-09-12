@@ -3,7 +3,7 @@ require("dotenv").config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const uniqueVal = require('mongoose-unique-validator');
+const uniqueVal = require("mongoose-unique-validator");
 
 mongoose.set("useFindAndModify", false);
 //const morgan = require("morgan");
