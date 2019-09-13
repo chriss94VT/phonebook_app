@@ -12,7 +12,8 @@
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
     "logs:prod": "heroku logs --tail",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test": "jest --verbose"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,11 @@
   },
   "devDependencies": {
     "eslint": "^6.3.0",
+    "jest": "^24.9.0",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.2"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
