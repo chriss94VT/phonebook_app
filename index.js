@@ -72,11 +72,11 @@ app.get('/api/persons/', (req, res, next) => {
 
 app.get('/info', (req, res, next) => {
   Entry.find({})
-    .then(() => {
-    //   const content = `<p>Phonebook has info for ${
-    //     docs.length
-    //   } person(s)</p><p>${new Date()}</p>`;
-      return res.send('./Utils/example.html');
+    .then((docs) => {
+      const content = `<p>Phonebook has info for ${
+        docs.length
+      } person(s)</p><p>${new Date()}</p>`;
+      return res.send(content);
     })
     .catch(error => next(error));
 });
