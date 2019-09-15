@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const uniqueVal = require('mongoose-unique-validator');
 const customLogger = require('./Utils/middleware');
+const config = require('./Utils/configUtils');
 
 mongoose.set('useFindAndModify', false);
 //const morgan = require("morgan");
@@ -29,7 +30,8 @@ app.use(bodyParser.json());
 // );
 app.use(customLogger.requestLogger);
 
-const url = `mongodb+srv://${process.env.DBUSER}:${process.env.DBPASSWORD}@herokuappdb-eb4ow.mongodb.net/phonebook?retryWrites=true&w=majority`;
+const url = `mongodb+srv://${config.user}:${config.password}@herokuappdb-eb4ow.mongodb.net/${config.db}?`
++ 'retryWrites=true&w=majority';
 console.log('Connecting to', url);
 
 mongoose
@@ -72,7 +74,7 @@ app.get('/api/persons/', (req, res, next) => {
 
 app.get('/info', (req, res, next) => {
   Entry.find({})
-    .then((docs) => {
+    .then(docs => {
       const content = `<p>Phonebook has info for ${
         docs.length
       } person(s)</p><p>${new Date()}</p>`;
@@ -163,7 +165,5 @@ const generateID = () => {
 app.use(customLogger.unknownEndpoint);
 app.use(customLogger.errorHandler);
 
-const PORT = process.env.PORT;
-app.listen(PORT);
-
+app.listen(config.port);
 module.exports = app;
