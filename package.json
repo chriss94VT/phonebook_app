@@ -12,7 +12,7 @@
     "logs:prod": "heroku logs --tail",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "cross-env NODE_ENV=test jest --verbose --detectOpenHandles"
+    "test": "cross-env NODE_ENV=test jest --verbose"
   },
   "repository": {
     "type": "git",

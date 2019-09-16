@@ -1,17 +1,15 @@
-const user = process.env.DBUSER;
-const password = process.env.DBPASSWORD;
+require('dotenv').config();
+
 const port = process.env.PORT;
-let db = process.env.DB_NAME;
+let url = process.env.DB_URI;
 
 if (process.env.NODE_ENV === 'development') {
-  db = process.env.DEV_DB_NAME;
+  url = process.env.DEV_DB_URI;
 } else if (process.env.NODE_ENV === 'test') {
-  db = process.env.TEST_DB_NAME;
+  url = process.env.TEST_DB_URI;
 }
 
 module.exports = {
-  user,
-  password,
-  port,
-  db
+  url,
+  port
 };
