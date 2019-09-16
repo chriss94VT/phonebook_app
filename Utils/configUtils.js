@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('./node_modules/dotenv').config();
 
 const port = process.env.PORT;
 let url = process.env.DB_URI;
