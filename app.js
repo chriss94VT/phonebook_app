@@ -6,7 +6,7 @@ require('dotenv').config();
 const cors = require('cors');
 const entriesRouter = require('./controllers/entries');
 const usersRouter = require('./controllers/users');
-const customLogger = require('./util/middleware');
+const customLogger = require('./utils/middleware');
 const mongoose = require('mongoose');
 const logger = require('./utils/logger');
 
