@@ -13,9 +13,6 @@ usersRouter.post('/', (req, res, next) => {
         name: body.name,
         passwordHash: pwd
       });
-      return user;
-    })
-    .then(user => {
       user.save();
       return res.json(user);
     })
