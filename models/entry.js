@@ -13,7 +13,11 @@ const entrySchema = new mongoose.Schema({
     required: true
   },
   date: Date,
-  id: Number
+  id: Number,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 });
 
 entrySchema.set('toJSON', {
