@@ -1,4 +1,4 @@
-const config = require('./utilities/configUtils');
+const config = require('./utils/configUtils');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -8,7 +8,7 @@ const entriesRouter = require('./controllers/entries');
 const usersRouter = require('./controllers/users');
 const customLogger = require('./utilities/middleware');
 const mongoose = require('mongoose');
-const logger = require('./utilities/logger');
+const logger = require('./utils/logger');
 
 mongoose.set('useFindAndModify', false);
 //const morgan = require("morgan");
