@@ -1,12 +1,12 @@
-const config = require('./utils/configUtils');
+const config = require('./utilities/configUtils');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 require('dotenv').config();
 const cors = require('cors');
-const customLogger = require('./utils/middleware');
+const customLogger = require('./utilities/middleware');
 const mongoose = require('mongoose');
-const logger = require('./utils/logger');
+const logger = require('./utilities/logger');
 
 const Entry = require('./models/entry');
 
