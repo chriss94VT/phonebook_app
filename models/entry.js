@@ -5,6 +5,7 @@ const entrySchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 3,
+    unique: true,
     required: true
   },
   number: {
@@ -13,7 +14,6 @@ const entrySchema = new mongoose.Schema({
     required: true
   },
   date: Date,
-  id: Number,
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
