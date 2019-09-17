@@ -1,5 +1,6 @@
 const entriesRouter = require('express').Router();
 const Entry = require('../models/entry');
+const User = require('../models/users');
 
 entriesRouter.get('/', (req, res, next) => {
   Entry.find({})
@@ -21,9 +22,9 @@ entriesRouter.get('/info', async (req, res, next) => {
 });
 
 entriesRouter.get('/:id', (req, res, next) => {
-  const userID = Number(req.params.id);
+  const userID = req.params.id;
   Entry.findOne({
-    id: userID
+    _id: userID
   })
     .then(docs => {
       if (docs === null) {
@@ -35,9 +36,9 @@ entriesRouter.get('/:id', (req, res, next) => {
 });
 
 entriesRouter.delete('/:id', (req, res, next) => {
-  const userID = Number(req.params.id);
+  const userID = req.params.id;
   Entry.findOneAndDelete({
-    id: userID
+    _id: userID
   })
     .then(docs => {
       return res.json(docs);
@@ -45,7 +46,7 @@ entriesRouter.delete('/:id', (req, res, next) => {
     .catch(error => next(error));
 });
 
-entriesRouter.post('/', (req, res, next) => {
+entriesRouter.post('/', async (req, res, next) => {
   const body = req.body;
 
   if (!body.name || !body.number) {
@@ -58,7 +59,8 @@ entriesRouter.post('/', (req, res, next) => {
     name: body.name,
     number: body.number,
     date: new Date(),
-    id: generateID()
+    id: generateID(),
+    user: await User.find({ username: body.username })
   });
 
   Entry.findOne({
@@ -77,12 +79,12 @@ entriesRouter.post('/', (req, res, next) => {
     .catch(error => next(error));
 });
 
-entriesRouter.put('/:id', (req, res, next) => {
-  const userID = Number(req.params.id);
+entriesRouter.put('/:id', async (req, res, next) => {
+  const userID = req.params.id;
 
   Entry.findOneAndUpdate(
     {
-      id: userID
+      _id: userID
     },
     {
       name: req.body.name,

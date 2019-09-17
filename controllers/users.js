@@ -2,6 +2,16 @@ const bcrypt = require('bcrypt');
 const usersRouter = require('express').Router();
 const User = require('../models/users');
 
+usersRouter.get('/', (req, res, next) => {
+  User.find({})
+    .then(users => {
+      return res.json(users);
+    })
+    .catch(error => {
+      next(error);
+    });
+});
+
 usersRouter.post('/', (req, res, next) => {
   const body = req.body;
   const saltRounds = 10;
