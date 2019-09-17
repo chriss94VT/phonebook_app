@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
     required: true,
     minlength: 6
   },
-  notes: [
+  entries: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Entry'

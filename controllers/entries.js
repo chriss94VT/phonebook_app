@@ -5,7 +5,7 @@ const User = require('../models/users');
 entriesRouter.get('/', (req, res, next) => {
   Entry.find({})
     .then(docs => {
-      return res.json(docs);
+      res.json(docs);
     })
     .catch(error => next(error));
 });
@@ -16,7 +16,7 @@ entriesRouter.get('/info', async (req, res, next) => {
       const content = `<p>Phonebook has info for ${
         docs.length
       } person(s)</p><p>${new Date()}</p>`;
-      return res.send(content);
+      res.send(content);
     })
     .catch(error => next(error));
 });
@@ -28,9 +28,9 @@ entriesRouter.get('/:id', (req, res, next) => {
   })
     .then(docs => {
       if (docs === null) {
-        return res.status(404).end();
+        res.status(404).end();
       }
-      return res.json(docs);
+      res.json(docs);
     })
     .catch(error => next(error));
 });
@@ -41,13 +41,14 @@ entriesRouter.delete('/:id', (req, res, next) => {
     _id: userID
   })
     .then(docs => {
-      return res.json(docs);
+      res.json(docs);
     })
     .catch(error => next(error));
 });
 
 entriesRouter.post('/', async (req, res, next) => {
   const body = req.body;
+  const userObj = await User.findOne({ username: body.username });
 
   if (!body.name || !body.number) {
     return res.status(400).json({
@@ -60,7 +61,7 @@ entriesRouter.post('/', async (req, res, next) => {
     number: body.number,
     date: new Date(),
     id: generateID(),
-    user: await User.find({ username: body.username })
+    user: userObj._id
   });
 
   Entry.findOne({
@@ -68,12 +69,18 @@ entriesRouter.post('/', async (req, res, next) => {
   })
     .then(docs => {
       if (docs !== null) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'Unique names are required'
         });
       } else {
-        entry.save().catch(error => next(error));
-        return res.json(entry);
+        entry
+          .save()
+          .then(newEntry => {
+            userObj.entries = userObj.entries.concat(newEntry._id);
+            userObj.save();
+          })
+          .catch(error => next(error));
+        res.json(entry);
       }
     })
     .catch(error => next(error));
@@ -92,7 +99,7 @@ entriesRouter.put('/:id', async (req, res, next) => {
     }
   )
     .then(docs => {
-      return res.json(docs);
+      res.json(docs);
     })
     .catch(error => next(error));
 });
