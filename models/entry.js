@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const uniqueVal = require('mongoose-unique-validator');
+const mongoose = require("mongoose");
+const uniqueVal = require("mongoose-unique-validator");
 
 const entrySchema = new mongoose.Schema({
   name: {
@@ -16,11 +16,11 @@ const entrySchema = new mongoose.Schema({
   id: Number,
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: "User"
   }
 });
 
-entrySchema.set('toJSON', {
+entrySchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -29,4 +29,4 @@ entrySchema.set('toJSON', {
 });
 
 entrySchema.plugin(uniqueVal);
-module.exports = mongoose.model('Entry', entrySchema);
+module.exports = mongoose.model("Entry", entrySchema);

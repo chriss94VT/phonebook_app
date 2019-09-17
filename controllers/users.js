@@ -1,8 +1,8 @@
-const bcrypt = require('bcrypt');
-const usersRouter = require('express').Router();
-const User = require('../models/users');
+const bcrypt = require("bcrypt");
+const usersRouter = require("express").Router();
+const User = require("../models/users");
 
-usersRouter.get('/', (req, res, next) => {
+usersRouter.get("/", (req, res, next) => {
   User.find({})
     .then(users => {
       return res.json(users);
@@ -12,7 +12,7 @@ usersRouter.get('/', (req, res, next) => {
     });
 });
 
-usersRouter.post('/', (req, res, next) => {
+usersRouter.post("/", (req, res, next) => {
   const body = req.body;
   const saltRounds = 10;
   bcrypt

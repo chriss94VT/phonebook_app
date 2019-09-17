@@ -1,16 +1,17 @@
-const entriesRouter = require('express').Router();
-const Entry = require('../models/entry');
-const User = require('../models/users');
+const entriesRouter = require("express").Router();
+const Entry = require("../models/entry");
+const User = require("../models/users");
 
-entriesRouter.get('/', (req, res, next) => {
-  Entry.find({})
+entriesRouter.get("/", async (req, res, next) => {
+  User.find({})
+    .populate("entries")
     .then(docs => {
-      res.json(docs);
+      res.json(docs.map(doc => doc.toJSON()));
     })
     .catch(error => next(error));
 });
 
-entriesRouter.get('/info', async (req, res, next) => {
+entriesRouter.get("/info", async (req, res, next) => {
   Entry.find({})
     .then(docs => {
       const content = `<p>Phonebook has info for ${
@@ -21,7 +22,7 @@ entriesRouter.get('/info', async (req, res, next) => {
     .catch(error => next(error));
 });
 
-entriesRouter.get('/:id', (req, res, next) => {
+entriesRouter.get("/:id", (req, res, next) => {
   const userID = req.params.id;
   Entry.findOne({
     _id: userID
@@ -35,7 +36,7 @@ entriesRouter.get('/:id', (req, res, next) => {
     .catch(error => next(error));
 });
 
-entriesRouter.delete('/:id', (req, res, next) => {
+entriesRouter.delete("/:id", (req, res, next) => {
   const userID = req.params.id;
   Entry.findOneAndDelete({
     _id: userID
@@ -46,13 +47,13 @@ entriesRouter.delete('/:id', (req, res, next) => {
     .catch(error => next(error));
 });
 
-entriesRouter.post('/', async (req, res, next) => {
+entriesRouter.post("/", async (req, res, next) => {
   const body = req.body;
   const userObj = await User.findOne({ username: body.username });
 
   if (!body.name || !body.number) {
     return res.status(400).json({
-      error: 'content not found'
+      error: "content not found"
     });
   }
 
@@ -70,7 +71,7 @@ entriesRouter.post('/', async (req, res, next) => {
     .then(docs => {
       if (docs !== null) {
         res.status(400).json({
-          error: 'Unique names are required'
+          error: "Unique names are required"
         });
       } else {
         entry
@@ -86,7 +87,7 @@ entriesRouter.post('/', async (req, res, next) => {
     .catch(error => next(error));
 });
 
-entriesRouter.put('/:id', async (req, res, next) => {
+entriesRouter.put("/:id", async (req, res, next) => {
   const userID = req.params.id;
 
   Entry.findOneAndUpdate(
@@ -98,6 +99,7 @@ entriesRouter.put('/:id', async (req, res, next) => {
       number: req.body.number
     }
   )
+
     .then(docs => {
       res.json(docs);
     })
