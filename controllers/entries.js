@@ -3,8 +3,8 @@ const Entry = require("../models/entry");
 const User = require("../models/users");
 
 entriesRouter.get("/", async (req, res, next) => {
-  User.find({})
-    .populate("entries")
+  Entry.find({})
+    .populate("users")
     .then(docs => {
       res.json(docs.map(doc => doc.toJSON()));
     })
