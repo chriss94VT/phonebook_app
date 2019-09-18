@@ -1,6 +1,7 @@
 require("dotenv").config();
 
-const port = process.env.PORT;
+const httpPort = process.env.PORT;
+const httpsPort = process.env.SECURE_PORT;
 let url = process.env.DB_URI;
 
 if (process.env.NODE_ENV === "development") {
@@ -11,5 +12,6 @@ if (process.env.NODE_ENV === "development") {
 
 module.exports = {
   url,
-  port
+  httpPort,
+  httpsPort
 };

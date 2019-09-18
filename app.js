@@ -7,7 +7,7 @@ const cors = require("cors");
 const entriesRouter = require("./controllers/entries");
 const usersRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
-const customLogger = require("./utils/middleware");
+const middleware = require("./utils/middleware");
 const mongoose = require("mongoose");
 const logger = require("./utils/logger");
 
@@ -15,7 +15,7 @@ mongoose.set("useFindAndModify", false);
 //const morgan = require("morgan");
 app.use(express.static("build"));
 app.use(bodyParser.json());
-app.use(customLogger.requestLogger);
+app.use(middleware.requestLogger);
 app.use(cors());
 
 // app.use(
@@ -46,11 +46,12 @@ mongoose
     logger.error("error connection to database", error.message);
   });
 
+app.use(middleware.tokenExtractor);
 app.use("/api/login", loginRouter);
 app.use("/api/persons", entriesRouter);
 app.use("/api/users", usersRouter);
 
-app.use(customLogger.unknownEndpoint);
-app.use(customLogger.errorHandler);
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;

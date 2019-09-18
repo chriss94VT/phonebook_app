@@ -5,15 +5,6 @@ const User = require("../models/users");
 
 entriesRouter.get("/", async (req, res, next) => {
   try {
-    const token = getToken(req);
-    const decryptedToken = jwt.verify(token, process.env.SECRET);
-
-    if (!token || !decryptedToken.id) {
-      res.status(401).json({
-        error: "token missing or invalid"
-      });
-    }
-
     const entries = await Entry.find({}).populate("user");
     res.json(entries.map(entry => entry.toJSON()));
   } catch (error) {
@@ -59,13 +50,14 @@ entriesRouter.delete("/:id", async (req, res, next) => {
 entriesRouter.post("/", async (req, res, next) => {
   try {
     const body = req.body;
-    const token = getToken(req);
-    const decryptedToken = jwt.verify(token, process.env.SECRET);
 
-    if (!token || !decryptedToken.id) {
-      res.status(401).json({
-        error: "token missing or invalid"
-      });
+    if (!req.token) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+    const decryptedToken = jwt.verify(req.token, process.env.SECRET);
+
+    if (!decryptedToken.id) {
+      return res.status(401).json({ error: "token missing or invalid" });
     }
 
     const userObj = await User.findById(decryptedToken.id);
@@ -117,15 +109,6 @@ entriesRouter.put("/:id", async (req, res, next) => {
 
 const generateID = () => {
   return Math.floor(Math.random() * 100000000);
-};
-
-const getToken = req => {
-  const auth = req.get("authorization");
-  if (auth && auth.toLowerCase().startsWith("bearer ")) {
-    console.log(auth.substring(7));
-    return auth.substring(7);
-  }
-  return null;
 };
 
 module.exports = entriesRouter;
