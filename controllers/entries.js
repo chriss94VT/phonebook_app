@@ -1,4 +1,5 @@
 const entriesRouter = require("express").Router();
+const jwt = require("jsonwebtoken");
 const Entry = require("../models/entry");
 const User = require("../models/users");
 
@@ -49,7 +50,16 @@ entriesRouter.delete("/:id", async (req, res, next) => {
 entriesRouter.post("/", async (req, res, next) => {
   try {
     const body = req.body;
-    const userObj = await User.findOne({ username: body.username });
+    const token = getToken(req);
+    const decryptedToken = jwt.verify(token, process.env.SECRET);
+
+    if (!token || !decryptedToken.id) {
+      res.status(401).json({
+        error: "token missing or invalid"
+      });
+    }
+
+    const userObj = await User.findById(decryptedToken.id);
 
     if (!body.name || !body.number) {
       res.status(400).json({
@@ -98,6 +108,15 @@ entriesRouter.put("/:id", async (req, res, next) => {
 
 const generateID = () => {
   return Math.floor(Math.random() * 100000000);
+};
+
+const getToken = req => {
+  const auth = req.get("authorization");
+  if (auth && auth.toLowerCase().startsWith("bearer ")) {
+    console.log(auth.substring(7));
+    return auth.substring(7);
+  }
+  return null;
 };
 
 module.exports = entriesRouter;

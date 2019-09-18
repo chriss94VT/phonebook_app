@@ -6,6 +6,7 @@ require("dotenv").config();
 const cors = require("cors");
 const entriesRouter = require("./controllers/entries");
 const usersRouter = require("./controllers/users");
+const loginRouter = require("./controllers/login");
 const customLogger = require("./utils/middleware");
 const mongoose = require("mongoose");
 const logger = require("./utils/logger");
@@ -45,6 +46,7 @@ mongoose
     logger.error("error connection to database", error.message);
   });
 
+app.use("/api/login", loginRouter);
 app.use("/api/persons", entriesRouter);
 app.use("/api/users", usersRouter);
 
