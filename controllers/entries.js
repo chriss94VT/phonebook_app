@@ -5,6 +5,15 @@ const User = require("../models/users");
 
 entriesRouter.get("/", async (req, res, next) => {
   try {
+    const token = getToken(req);
+    const decryptedToken = jwt.verify(token, process.env.SECRET);
+
+    if (!token || !decryptedToken.id) {
+      res.status(401).json({
+        error: "token missing or invalid"
+      });
+    }
+
     const entries = await Entry.find({}).populate("user");
     res.json(entries.map(entry => entry.toJSON()));
   } catch (error) {
