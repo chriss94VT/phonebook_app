@@ -5,6 +5,14 @@ const User = require("../models/users");
 
 entriesRouter.get("/", async (req, res, next) => {
   try {
+    if (!req.token) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+    const decryptedToken = jwt.verify(req.token, process.env.SECRET);
+
+    if (!decryptedToken.id) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
     const entries = await Entry.find({}).populate("user");
     res.json(entries.map(entry => entry.toJSON()));
   } catch (error) {
@@ -14,6 +22,15 @@ entriesRouter.get("/", async (req, res, next) => {
 
 entriesRouter.get("/info", async (req, res, next) => {
   try {
+    if (!req.token) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+    const decryptedToken = jwt.verify(req.token, process.env.SECRET);
+
+    if (!decryptedToken.id) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+
     const entries = await Entry.find({});
     const content = `<p>Phonebook has info for ${
       entries.length
@@ -26,6 +43,15 @@ entriesRouter.get("/info", async (req, res, next) => {
 
 entriesRouter.get("/:id", async (req, res, next) => {
   try {
+    if (!req.token) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+    const decryptedToken = jwt.verify(req.token, process.env.SECRET);
+
+    if (!decryptedToken.id) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+
     const id = req.params.id;
     const user = await Entry.findOne({ _id: id });
     if (user === null) {
@@ -39,6 +65,15 @@ entriesRouter.get("/:id", async (req, res, next) => {
 
 entriesRouter.delete("/:id", async (req, res, next) => {
   try {
+    if (!req.token) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+    const decryptedToken = jwt.verify(req.token, process.env.SECRET);
+
+    if (!decryptedToken.id) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+
     const id = req.params.id;
     const entry = await Entry.findOneAndDelete({ _id: id });
     res.json(entry.toJSON());
@@ -95,6 +130,15 @@ entriesRouter.post("/", async (req, res, next) => {
 
 entriesRouter.put("/:id", async (req, res, next) => {
   try {
+    if (!req.token) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+    const decryptedToken = jwt.verify(req.token, process.env.SECRET);
+
+    if (!decryptedToken.id) {
+      return res.status(401).json({ error: "token missing or invalid" });
+    }
+
     const id = req.params.id;
     const body = req.body;
     const updatedEntry = await Entry.findOneAndUpdate(
