@@ -47,7 +47,7 @@ mongoose
   });
 
 app.use(middleware.tokenExtractor);
-app.use("/api/login", loginRouter);
+app.use("/api/auth", loginRouter);
 app.use("/api/persons", entriesRouter);
 app.use("/api/users", usersRouter);
 
