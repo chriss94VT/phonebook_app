@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === "development") {
   url = process.env.TEST_DB_URI;
 }
 
-// Modules to export version 1
+// Modules to export version 2
 module.exports = {
   url,
   httpPort,

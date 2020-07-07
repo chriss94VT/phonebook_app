@@ -30,3 +30,5 @@ entrySchema.set("toJSON", {
 
 entrySchema.plugin(uniqueVal);
 module.exports = mongoose.model("Entry", entrySchema);
+
+// Version 2
