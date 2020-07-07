@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === "development") {
   url = process.env.TEST_DB_URI;
 }
 
+// New comments to determine environment
 module.exports = {
   url,
   httpPort,
